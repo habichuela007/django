@@ -1,6 +1,31 @@
-<h1>{{question.question_text}}</h1>
+<!--<h1>{{question.question_text}}</h1>
 <ul>
     {% for choice in question.choice_set.all %}
         <li>{{question.choice_text}}</li>
     {% endfor %}
-</ul>
+</ul> -->
+
+<!--El action dirige a la url, siempre es buena práctica que un formulario envíe el método post, para que los datos viajen ocultos a través del protocolo-->
+<form action="{% url 'polls:vote' question.id %}" method="post">
+{% csrf_token %} <!--Sive para protegerse del ataque-->
+<fieldset>
+    <legend><h1>{{ question.question_text }}</h1></legend>
+    {% if error_message %}
+        <p><strong>{{ error_message}}</strong></p>
+    {% endif %}
+    {% for choice in question.choice_set.all %}
+    <!--forloop.counter Sive para ver en qué ciclo está el for-->
+        <input 
+            type="radio"
+            name="choice"
+            id="choice{{ forloop.counter }}" 
+            value="{{choice.id}}"
+        >
+        <label for="choice{{ forloop.counter }}">
+            {{ choice.choice_text }}
+        </label>
+        <br>
+    {% endfor %}    
+</fieldset>
+<input type="submit" value="votar">
+</form>
